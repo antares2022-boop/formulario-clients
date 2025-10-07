@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Control of Interested Clients Phase Two</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Google Sans', Roboto, Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #202124;
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: #673ab7;
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .required-note {
+            font-size: 14px;
+            color: #5f6368;
+            margin: 16px 24px;
+            font-style: italic;
+        }
+
+        .form-section {
+            padding: 0 24px 24px;
+        }
+
+        .field-group {
+            margin-bottom: 32px;
+        }
+
+        .field-label {
+            display: block;
+            font-size: 14px;
+            font-weight: 400;
+            color: #202124;
+            margin-bottom: 8px;
+        }
+
+        .required {
+            color: #d93025;
+        }
+
+        .text-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .text-input:focus {
+            border-color: #673ab7;
+            box-shadow: 0 0 0 2px rgba(103, 58, 183, 0.2);
+        }
+
+        .textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: #673ab7;
+            margin: 32px 0 16px 0;
+            border-bottom: 1px solid #dadce0;
+            padding-bottom: 8px;
+        }
+
+        .checkbox-group {
+            margin-top: 12px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            transform: scale(1.2);
+            accent-color: #673ab7;
+        }
+
+        .checkbox-item label {
+            font-size: 14px;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .other-input {
+            margin-left: 28px;
+            margin-top: 8px;
+            width: calc(100% - 28px);
+        }
+
+        .photo-section {
+            margin-top: 24px;
+            padding: 20px;
+            border: 2px dashed #dadce0;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .photo-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+
+        .btn-primary {
+            background: #673ab7;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #563093;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #673ab7;
+            border: 1px solid #dadce0;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f3f4;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(217, 48, 37, 0.9);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .submit-section {
+            padding: 24px;
+            border-top: 1px solid #dadce0;
+            background: #f8f9fa;
+            text-align: center;
+        }
+
+        .btn-submit {
+            background: #673ab7;
+            color: white;
+            padding: 12px 32px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: #563093;
+        }
+
+        .btn-submit:disabled {
+            background: #dadce0;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #d93025;
+            font-size: 12px;
+            margin-top: 4px;
+        }
+
+        .success-message {
+            background: #e8f5e8;
+            color: #137333;
+            padding: 16px;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        #video {
+            width: 100%;
+            max-width: 300px;
+            border-radius: 8px;
+            margin: 16px 0;
+        }
+
+        .camera-container {
+            display: none;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            
+            body {
+                padding: 0;
+            }
+            
+            .photo-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CONTROL OF INTERESTED CLIENTS PHASE TWO</h1>
+        </div>
+
+        <div class="required-note">
+            * Indica que la pregunta es obligatoria
+        </div>
+
+        <form id="clientForm" class="form-section">
+            <!-- Campo 1: Store Name -->
+            <div class="field-group">
+                <label class="field-label" for="storeName">
+                    1. STORE NAME <span class="required">*</span>
+                </label>
+                <input type="text" id="storeName" name="storeName" class="text-input" required>
+                <div class="error-message" id="storeNameError"></div>
+            </div>
+
+            <!-- Campo 2: Seller Name -->
+            <div class="field-group">
+                <label class="field-label" for="sellerName">
+                    2. SELLER NAME <span class="required">*</span>
+                </label>
+                <input type="text" id="sellerName" name="sellerName" class="text-input" required>
+                <div class="error-message" id="sellerNameError"></div>
+            </div>
+
+            <!-- Campo 3: WhatsApp Phone -->
+            <div class="field-group">
+                <label class="field-label" for="whatsappPhone">
+                    3. WHATSAPP PHONE <span class="required">*</span>
+                </label>
+                <input type="tel" id="whatsappPhone" name="whatsappPhone" class="text-input" required>
+                <div class="error-message" id="whatsappPhoneError"></div>
+            </div>
+
+            <!-- Sección Address -->
+            <div class="section-title">4. Address</div>
+
+            <!-- Campo 5: Google Maps Link -->
+            <div class="field-group">
+                <label class="field-label" for="googleMapsLink">
+                    5. link location on Google Maps <span class="required">*</span>
+                </label>
+                <input type="url" id="googleMapsLink" name="googleMapsLink" class="text-input" required 
+                       placeholder="https://maps.google.com/...">
+                <div class="error-message" id="googleMapsLinkError"></div>
+            </div>
+
+            <!-- Campo 6: Materials/Services -->
+            <div class="field-group">
+                <label class="field-label">
+                    6. What materials/services were the client interested in? <span class="required">*</span>
+                </label>
+                <p style="font-size: 12px; color: #5f6368; margin-bottom: 12px;">Selecciona todos los que correspondan.</p>
+                
+                <div class="checkbox-group">
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="acrilico" name="materials" value="ACRILICO FRONTAL">
+                        <label for="acrilico">ACRILICO FRONTAL</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lamina" name="materials" value="AVISO EN LAMINA PVC">
+                        <label for="lamina">AVISO EN LAMINA PVC</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="lona" name="materials" value="LONA">
+                        <label for="lona">LONA</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="microperforado" name="materials" value="MICROPERFORADO">
+                        <label for="microperforado">MICROPERFORADO</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="caballete" name="materials" value="CABALLETE">
+                        <label for="caballete">CABALLETE</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="bandelos" name="materials" value="BANDELOS">
+                        <label for="bandelos">BANDELOS</label>
+                    </div>
+                    <div class="checkbox-item">
+                        <input type="checkbox" id="other" name="materials" value="other">
+                        <label for="other">Otro:</label>
+                    </div>
+                    <input type="text" id="otherText" name="otherText" class="text-input other-input" 
+                           placeholder="Especifica otro material/servicio" style="display: none;">
+                </div>
+                <div class="error-message" id="materialsError"></div>
+            </div>
+
+            <!-- Campo 7: Description -->
+            <div class="field-group">
+                <label class="field-label" for="description">
+                    7. Description <span class="required">*</span>
+                </label>
+                <textarea id="description" name="description" class="text-input textarea" required 
+                          placeholder="Describe los detalles del proyecto..."></textarea>
+                <div class="error-message" id="descriptionError"></div>
+            </div>
+
+            <!-- Campo 8: Alto -->
+            <div class="field-group">
+                <label class="field-label" for="alto">
+                    8. ALTO <span class="required">*</span>
+                </label>
+                <input type="number" id="alto" name="alto" class="text-input" step="0.01" min="0" required 
+                       placeholder="Altura en metros o centímetros">
+                <div class="error-message" id="altoError"></div>
+            </div>
+
+            <!-- Campo 9: Ancho -->
+            <div class="field-group">
+                <label class="field-label" for="ancho">
+                    9. ANCHO <span class="required">*</span>
+                </label>
+                <input type="number" id="ancho" name="ancho" class="text-input" step="0.01" min="0" required 
+                       placeholder="Ancho en metros o centímetros">
+                <div class="error-message" id="anchoError"></div>
+            </div>
+
+            <!-- Campo 10: Subir Fotos -->
+            <div class="field-group">
+                <div class="section-title">10. subir fotos</div>
+                <div class="photo-section">
+                    <div class="photo-buttons">
+                        <button type="button" class="btn btn-primary" id="cameraBtn">📸 Tomar Foto</button>
+                        <button type="button" class="btn btn-secondary" id="fileBtn">📁 Subir Archivo</button>
+                    </div>
+                    
+                    <input type="file" id="fileInput" accept="image/*" multiple style="display: none;">
+                    
+                    <div class="camera-container" id="cameraContainer">
+                        <video id="video" autoplay playsinline></video>
+                        <div>
+                            <button type="button" class="btn btn-primary" id="captureBtn">Capturar</button>
+                            <button type="button" class="btn btn-secondary" id="stopCameraBtn">Cerrar Cámara</button>
+                        </div>
+                    </div>
+                    
+                    <canvas id="canvas" style="display: none;"></canvas>
+                    
+                    <div class="photo-preview" id="photoPreview"></div>
+                    
+                    <p style="font-size: 12px; color: #5f6368; margin-top: 12px;">
+                        Archivos enviados: <span id="fileCount">0</span>
+                    </p>
+                </div>
+            </div>
+        </form>
+
+        <div class="submit-section">
+            <button type="submit" class="btn-submit" id="submitBtn" form="clientForm">Enviar Formulario</button>
+        </div>
+    </div>
+
+    <script>
+        // Variables globales
+        let photos = [];
+        let stream = null;
+
+        // Referencias a elementos
+        const form = document.getElementById('clientForm');
+        const cameraBtn = document.getElementById('cameraBtn');
+        const fileBtn = document.getElementById('fileBtn');
+        const fileInput = document.getElementById('fileInput');
+        const cameraContainer = document.getElementById('cameraContainer');
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('captureBtn');
+        const stopCameraBtn = document.getElementById('stopCameraBtn');
+        const photoPreview = document.getElementById('photoPreview');
+        const fileCount = document.getElementById('fileCount');
+        const otherCheckbox = document.getElementById('other');
+        const otherText = document.getElementById('otherText');
+
+        // Manejar checkbox "Otro"
+        otherCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                otherText.style.display = 'block';
+                otherText.required = true;
+            } else {
+                otherText.style.display = 'none';
+                otherText.required = false;
+                otherText.value = '';
+            }
+        });
+
+        // Activar cámara
+        cameraBtn.addEventListener('click', async function() {
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { facingMode: 'environment' }, 
+                    audio: false 
+                });
+                video.srcObject = stream;
+                cameraContainer.style.display = 'block';
+                cameraBtn.style.display = 'none';
+            } catch (error) {
+                alert('Error al acceder a la cámara: ' + error.message);
+            }
+        });
+
+        // Capturar foto
+        captureBtn.addEventListener('click', function() {
+            const context = canvas.getContext('2d');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0);
+            
+            canvas.toBlob(function(blob) {
+                const photoData = {
+                    blob: blob,
+                    url: URL.createObjectURL(blob),
+                    name: `foto_${Date.now()}.jpg`,
+                    timestamp: new Date().toLocaleString()
+                };
+                
+                photos.push(photoData);
+                updatePhotoPreview();
+                updateFileCount();
+            }, 'image/jpeg', 0.8);
+        });
+
+        // Cerrar cámara
+        stopCameraBtn.addEventListener('click', function() {
+            if (stream) {
+                stream.getTracks().forEach(track => track.stop());
+                stream = null;
+            }
+            cameraContainer.style.display = 'none';
+            cameraBtn.style.display = 'inline-block';
+        });
+
+        // Subir archivos
+        fileBtn.addEventListener('click', function() {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const photoData = {
+                        blob: file,
+                        url: URL.createObjectURL(file),
+                        name: file.name,
+                        timestamp: new Date().toLocaleString()
+                    };
+                    photos.push(photoData);
+                }
+            });
+            updatePhotoPreview();
+            updateFileCount();
+            fileInput.value = '';
+        });
+
+        // Actualizar vista previa
+        function updatePhotoPreview() {
+            photoPreview.innerHTML = '';
+            photos.forEach((photo, index) => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.innerHTML = `
+                    <img src="${photo.url}" alt="Foto ${index + 1}">
+                    <button type="button" class="photo-remove" onclick="removePhoto(${index})">×</button>
+                `;
+                photoPreview.appendChild(photoItem);
+            });
+        }
+
+        // Eliminar foto
+        function removePhoto(index) {
+            URL.revokeObjectURL(photos[index].url);
+            photos.splice(index, 1);
+            updatePhotoPreview();
+            updateFileCount();
+        }
+
+        // Actualizar contador
+        function updateFileCount() {
+            fileCount.textContent = photos.length;
+        }
+
+        // Validación del formulario
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = ['storeName', 'sellerName', 'whatsappPhone', 'googleMapsLink', 'description', 'alto', 'ancho'];
+            
+            // Limpiar errores previos
+            document.querySelectorAll('.error-message').forEach(error => error.textContent = '');
+            
+            // Validar campos requeridos
+            requiredFields.forEach(fieldName => {
+                const field = document.getElementById(fieldName);
+                const errorElement = document.getElementById(fieldName + 'Error');
+                
+                if (!field.value.trim()) {
+                    errorElement.textContent = 'Este campo es obligatorio';
+                    isValid = false;
+                }
+            });
+
+            // Validar materiales (al menos uno seleccionado)
+            const materials = document.querySelectorAll('input[name="materials"]:checked');
+            if (materials.length === 0) {
+                document.getElementById('materialsError').textContent = 'Debe seleccionar al menos un material/servicio';
+                isValid = false;
+            }
+
+            // Validar "Otro" si está seleccionado
+            if (otherCheckbox.checked && !otherText.value.trim()) {
+                document.getElementById('materialsError').textContent = 'Debe especificar el otro material/servicio';
+                isValid = false;
+            }
+
+            return isValid;
+        }
+
+        // Enviar formulario
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            if (!validateForm()) {
+                alert('Por favor, complete todos los campos obligatorios');
+                return;
+            }
+
+            // Recopilar datos del formulario
+            const formData = new FormData(form);
+            const data = {
+                timestamp: new Date().toISOString(),
+                storeName: formData.get('storeName'),
+                sellerName: formData.get('sellerName'),
+                whatsappPhone: formData.get('whatsappPhone'),
+                googleMapsLink: formData.get('googleMapsLink'),
+                materials: Array.from(document.querySelectorAll('input[name="materials"]:checked')).map(cb => cb.value),
+                otherMaterial: formData.get('otherText') || '',
+                description: formData.get('description'),
+                alto: formData.get('alto'),
+                ancho: formData.get('ancho'),
+                photoCount: photos.length,
+                calculatedArea: (parseFloat(formData.get('alto')) * parseFloat(formData.get('ancho'))).toFixed(2)
+            };
+
+            // Crear archivo de descarga
+            const jsonData = JSON.stringify(data, null, 2);
+            const blob = new Blob([jsonData], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `control_clients_${data.storeName.replace(/\s+/g, '_')}_${Date.now()}.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            // Mostrar mensaje de éxito
+            alert('¡Formulario enviado exitosamente! Los datos se han descargado automáticamente.');
+            
+            // Opcional: limpiar formulario
+            if (confirm('¿Desea limpiar el formulario para una nueva entrada?')) {
+                form.reset();
+                photos.forEach(photo => URL.revokeObjectURL(photo.url));
+                photos = [];
+                updatePhotoPreview();
+                updateFileCount();
+                otherText.style.display = 'none';
+            }
+        });
+
+        // Auto-guardado cada 30 segundos
+        setInterval(function() {
+            const formData = new FormData(form);
+            const tempData = Object.fromEntries(formData.entries());
+            localStorage.setItem('clientFormDraft', JSON.stringify(tempData));
+        }, 30000);
+
+        // Cargar borrador al cargar la página
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('clientFormDraft');
+            if (draft && confirm('Se encontró un borrador guardado. ¿Desea restaurarlo?')) {
+                const data = JSON.parse(draft);
+                Object.keys(data).forEach(key => {
+                    const field = document.getElementById(key);
+                    if (field) {
+                        field.value = data[key];
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
